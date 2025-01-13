@@ -70,7 +70,7 @@ class DialogueSampler(DialogueGenerator):
 
         return all_dialogues
 
-    async def ainvoke(self, *args, **kwargs):
+    async def ainvoke(self, *args, **kwargs): 
         return self.invoke(*args, **kwargs)
 
 
