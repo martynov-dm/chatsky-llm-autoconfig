@@ -11,8 +11,6 @@ chatsky_llm_autoconfig = {path = "dev_packages/chatsky_llm_autoconfig", develop 
 tqdm = "^4.66.5"
 poethepoet = "^0.29.0"
 pandas = "^2.2.3"
-colorama = "^0.4.6"
-pyarrow = "^18.0.0"
 
 [tool.poetry.group.docs]
 optional = true
@@ -31,26 +29,12 @@ sphinx-autodoc-typehints = "*"
 jupytext = "*"
 jupyter = "*"
 
-<<<<<<< HEAD
-
-[tool.poetry.group.dev.dependencies]
-ipykernel = "^6.29.5"
-
-=======
->>>>>>> aa341269fece8d44c041cb7ff4e7857c4f7a83f7
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 
 
-
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> aa341269fece8d44c041cb7ff4e7857c4f7a83f7
 [tool.poetry.group.lint]
 optional = true
 
@@ -61,13 +45,6 @@ black = "*"
 mypy = "*"
 
 
-
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> aa341269fece8d44c041cb7ff4e7857c4f7a83f7
 [tool.poetry.group.tests]
 optional = true
 
@@ -81,6 +58,4 @@ default_task_type = "script"
 flake = "scripts.codestyle:_run_flake"
 black = "scripts.codestyle:_run_black(modify=False)"
 format = "scripts.codestyle:_run_black(modify=True)"
-test = "scripts.test:_test"
-metrics = "scripts.metrics:_run_check"
 lint.sequence = ["flake", "black"]

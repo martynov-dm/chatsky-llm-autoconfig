@@ -6,14 +6,11 @@ This module contains functions that checks Graphs and Dialogues for various metr
 """
 
 from chatsky_llm_autoconfig.graph import BaseGraph
-from typing import List, Tuple
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain.prompts import PromptTemplate
 from pydantic import BaseModel, Field
-from typing import List
 from langchain_core.output_parsers import PydanticOutputParser
 import logging
-
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 
@@ -183,3 +180,96 @@ def is_theme_valid(G: BaseGraph, model: BaseChatModel, topic: str) -> dict[str]:
     response = theme_check_chain.invoke(input_data)
 
     return {"value": response.isValid, "description": response.description}
+
+
+def are_triplets_valid(G: BaseGraph, model: BaseChatModel, topic: str) -> dict:
+    """
+    Validates the dialog graph structure and logical transitions between nodes.
+
+    Returns:
+    {
+        "is_valid": bool,  # валиден ли граф в целом
+        "invalid_transitions": [  # список невалидных переходов
+            {
+                "from": ["source utterance"],
+                "user": ["user utterance"],
+                "to": ["target utterance"],
+                "reason": "причина невалидности"
+            },
+            ...
+        ]
+    }
+    """
+    triplet_validate_prompt_template = """
+    You are given a dialog between assistant and a user.
+    source_utterances, edge_utterances, target_utterances are dialog parts and each contains an array with exactly one utterance.
+    They should be read left to right.
+
+    - source_utterances are assistant phrases 
+    - edge_utterances are user phrases
+    - target_utterances are assistant phrases 
+
+    TASK. Evaluate if the transition makes a logical connection when reading from Source utterances to Target utterances through Edge utterances
+
+    Dialog topic: {topic}
+
+    (source_utterances) {source_utterances} -> (edge_utterances) {edge_utterances} -> (target_utterances) {target_utterances}
+
+    Return only JSON:
+    {{"isValid": true/false, "reason": "explanation why it's valid or invalid."}}
+    """
+
+    triplet_validate_prompt = PromptTemplate(
+        input_variables=["source_utterances", "edge_utterances", "target_utterances", "topic"],
+        template=triplet_validate_prompt_template,
+    )
+
+    class TransitionValidationResult(BaseModel):
+        isValid: bool = Field(description="Whether the transition is valid or not.")
+        reason: str = Field(description="Explanation of why it's valid or invalid.")
+
+    parser = PydanticOutputParser(pydantic_object=TransitionValidationResult)
+
+    graph = G.graph_dict
+    node_map = {node["id"]: node for node in graph["nodes"]}
+    invalid_transitions = []
+    is_valid = True
+
+    for edge in graph["edges"]:
+        source_id = edge["source"]
+        target_id = edge["target"]
+
+        # Проверяем существование узлов
+        if source_id not in node_map:
+            is_valid = False
+            continue
+        if target_id not in node_map:
+            is_valid = False
+            continue
+
+        source_node = node_map[source_id]
+        target_node = node_map[target_id]
+
+        input_data = {
+            "source_utterances": source_node["utterances"],
+            "edge_utterances": edge["utterances"],
+            "target_utterances": target_node["utterances"],
+            "topic": topic,
+        }
+
+        triplet_check_chain = triplet_validate_prompt | model | parser
+        result = triplet_check_chain.invoke(input_data)
+
+        if not result.isValid:
+            is_valid = False
+            invalid_transitions.append({
+                "from": source_node["utterances"],
+                "user": edge["utterances"],
+                "to": target_node["utterances"],
+                "reason": result.reason
+            })
+
+    return {
+        "is_valid": is_valid,
+        "invalid_transitions": invalid_transitions
+    }
