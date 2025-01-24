@@ -24,13 +24,30 @@ class BaseGraph(BaseModel, abc.ABC):
     def visualise(self, *args, **kwargs):
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def nodes_by_utterance(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def edges_by_utterance(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def node_by_id(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def edge_by_target(self):
+        raise NotImplementedError
+
 
 class Graph(BaseGraph):
 
     def __init__(self, graph_dict: dict, **kwargs: Any):
         # Pass graph_dict to the parent class
         super().__init__(graph_dict=graph_dict, **kwargs)
-        self.load_graph()
+        if graph_dict:
+            self.load_graph()
 
     def load_graph(self):
         self.graph = nx.DiGraph()
@@ -72,3 +89,20 @@ class Graph(BaseGraph):
         plt.title(__name__)
         plt.axis("off")
         plt.show()
+
+    def nodes_by_utterance(self, utterance: str) -> list[dict]:
+        return [node for node in self.graph_dict["nodes"] if utterance in node["utterances"]]
+
+    def edges_by_utterance(self, utterance: str) -> list[dict]:
+        return [edge for edge in self.graph_dict["edges"] if utterance in edge["utterances"]]
+
+    def node_by_id(self, id: int):
+        for node in self.graph_dict["nodes"]:
+            if node["id"] == id:
+                return node
+
+    def edge_by_source(self, source: int):
+        return [edge for edge in self.graph_dict["edges"] if source == edge["source"]]
+
+    def edge_by_target(self, target: int):
+        return [edge for edge in self.graph_dict["edges"] if target == edge["target"]]

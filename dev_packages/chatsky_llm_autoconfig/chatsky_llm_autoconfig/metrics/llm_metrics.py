@@ -5,6 +5,8 @@ LLM Metrics.
 This module contains functions that checks Graphs and Dialogues for various metrics using LLM calls.
 """
 
+import logging
+import json
 from typing import List, TypedDict
 from chatsky_llm_autoconfig.graph import BaseGraph, Graph
 from chatsky_llm_autoconfig.graph import BaseGraph
@@ -12,8 +14,6 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain.prompts import PromptTemplate
 from pydantic import BaseModel, Field
 from langchain_core.output_parsers import PydanticOutputParser
-import logging
-import json
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
