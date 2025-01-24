@@ -3,7 +3,7 @@ import itertools
 import networkx as nx
 from chatsky_llm_autoconfig.graph import BaseGraph
 from chatsky_llm_autoconfig.algorithms.base import DialogueGenerator
-from chatsky_llm_autoconfig.dialogue import Dialogue
+from chatsky_llm_autoconfig.schemas import Dialogue
 from chatsky_llm_autoconfig.autometrics.registry import AlgorithmRegistry
 
 

@@ -9,7 +9,7 @@ for various metrics.
 import networkx as nx
 from chatsky_llm_autoconfig.metrics.jaccard import jaccard_edges, jaccard_nodes, collapse_multiedges
 from chatsky_llm_autoconfig.graph import BaseGraph
-from chatsky_llm_autoconfig.dialogue import Dialogue
+from chatsky_llm_autoconfig.schemas import Dialogue
 
 
 def edge_match_for_multigraph(x, y):

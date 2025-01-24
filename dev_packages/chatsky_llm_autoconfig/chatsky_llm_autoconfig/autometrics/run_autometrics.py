@@ -4,7 +4,7 @@ from chatsky_llm_autoconfig.algorithms.topic_graph_generation import CycleGraphG
 from chatsky_llm_autoconfig.algorithms.dialogue_generation import DialogueSampler
 import json
 from chatsky_llm_autoconfig.graph import Graph, BaseGraph
-from chatsky_llm_autoconfig.dialogue import Dialogue
+from chatsky_llm_autoconfig.schemas import Dialogue
 from chatsky_llm_autoconfig.metrics.automatic_metrics import *
 from chatsky_llm_autoconfig.metrics.llm_metrics import are_triplets_valid, is_theme_valid
 import datetime

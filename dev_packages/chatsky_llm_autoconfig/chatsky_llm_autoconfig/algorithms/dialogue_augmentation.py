@@ -1,4 +1,4 @@
-from chatsky_llm_autoconfig.dialogue import Dialogue
+from chatsky_llm_autoconfig.schemas import Dialogue
 from chatsky_llm_autoconfig.schemas import DialogueMessage
 from chatsky_llm_autoconfig.autometrics.registry import AlgorithmRegistry
 

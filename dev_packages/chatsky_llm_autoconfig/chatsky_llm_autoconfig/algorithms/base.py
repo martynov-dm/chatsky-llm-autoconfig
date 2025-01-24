@@ -2,8 +2,9 @@ from typing import List
 from pydantic import BaseModel
 import abc
 from chatsky_llm_autoconfig.graph import BaseGraph
-from chatsky_llm_autoconfig.dialogue import Dialogue
+from chatsky_llm_autoconfig.schemas import Dialogue
 from langchain_core.language_models.chat_models import BaseChatModel
+from langchain.prompts import PromptTemplate
 
 
 class BaseAlgorithm(BaseModel, abc.ABC):
@@ -72,7 +73,7 @@ class GraphAugmentation(BaseAlgorithm):
 class TopicGraphGenerator(BaseAlgorithm):
     """Graph generator that works only with topics."""
 
-    def invoke(self, topic: str, model: BaseChatModel) -> BaseGraph:
+    def invoke(self, model: BaseChatModel, prompt: PromptTemplate) -> BaseGraph:
         raise NotImplementedError
 
     async def ainvoke(self, topic: str) -> BaseGraph:

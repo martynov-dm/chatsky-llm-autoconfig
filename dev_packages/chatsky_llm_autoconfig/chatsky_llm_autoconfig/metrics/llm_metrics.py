@@ -188,7 +188,7 @@ class GraphValidationResult(TypedDict):
     invalid_transitions: List[InvalidTransition]
 
 
-def graph_validation(G: Graph, model: BaseChatModel) -> GraphValidationResult:
+def graph_validation(G: BaseGraph, model: BaseChatModel) -> GraphValidationResult:
     """
     Проверяет валидность графа диалога
     Возвращает:
